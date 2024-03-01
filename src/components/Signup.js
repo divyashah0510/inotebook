@@ -8,31 +8,35 @@ const Signup = (props) => {
     }
     const navigation = useNavigate();
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const { name, email, password } = credentials;
-        const response = await fetch(`${process.env.REACT_APP_HOSTNAME}/api/auth/createuser`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                name,
-                email,
-                password,
-            }),
-        });
-        const json = await response.json();
-        console.log("Response from server: ", json);
-        if (json.error) {
-            props.showAlert("Invalid Credentials", "red");
-        } else {
+    e.preventDefault();
+    const { name, email, password } = credentials;
+    const response = await fetch(`${process.env.REACT_APP_HOSTNAME}/api/auth/createuser`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            password,
+        }),
+    });
+    const { authToken, error } = await response.json();
+    console.log("Response from server: ", { authToken, error });
+    if (error) {
+        props.showAlert("Error creating user", "red");
+    } else {
+        setTimeout(() => {
+            localStorage.setItem('token', authToken);
+            console.log(localStorage.getItem('token'));
             props.showAlert("User Created Successfully", "green");
-            localStorage.setItem('token', json.token);
             setTimeout(() => {
-                navigation('/');
+                navigation('/login');
             }, 1000);
-        }
+        }, 1000);
     }
+}
+
     return (
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
