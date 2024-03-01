@@ -3,7 +3,7 @@ import noteContext from '../context/noteContext'
 import NoteItem from './NoteItem';
 import AddNote from './AddNote';
 
-const Notes = () => {
+const Notes = (props) => {
     const context = useContext(noteContext);
     const { notes, getNotes, editNote } = context;
     useEffect(() => {
@@ -27,6 +27,7 @@ const Notes = () => {
         editNote(note.id, note.etitle, note.edescription, note.etag);
         setTimeout(() => {
             toggleModal();
+            props.showAlert("Note Updated Successfully", "green");
         }, 3000);
 
     }
@@ -37,7 +38,7 @@ const Notes = () => {
 
     return (
         <div>
-            <AddNote />
+            <AddNote showAlert={props.showAlert} />
 
 
             <button
@@ -115,12 +116,12 @@ const Notes = () => {
 
             <h1 className='text-center text-3xl font-extrabold mt-9 mb-9'>Your Notes</h1>
             <div className='text-center container mx-auto'>
-                {notes.length === 0 && <p className='text-center mx-auto text-2xl'>No notes to display 🤫</p>}
+                {notes.length === 0 && <p className='text-center mx-auto text-2xl'>No notes to display 🤔</p>}
             </div>
             <div className=' justify-center items-center grid grid-rows-4 grid-cols-4'>
                 {notes.map((note) => {
                     return (
-                        <NoteItem note={note} updateNote={updateNote} key={note._id} />
+                        <NoteItem note={note} updateNote={updateNote} showAlert={props.showAlert} key={note._id} />
                     )
                 })}
             </div>
