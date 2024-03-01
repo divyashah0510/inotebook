@@ -19,20 +19,20 @@ const Login = (props) => {
             },
             body: JSON.stringify({ email: credentials.email, password: credentials.password }),
         });
-        const json = await response.json();
-        console.log("Response from server: ", json);
-        if (json.error) {
+        const { authToken, error } = await response.json();
+        console.log("Response from server: ", { authToken, error });
+        if (error) {
             props.showAlert("Invalid Credentials", "red");
         } else {
             setTimeout(() => {
-                localStorage.setItem('token', json.token);
+                localStorage.setItem('token', authToken);
+                console.log(localStorage.getItem('token'));
                 props.showAlert("Logged in Successfully", "green");
                 setTimeout(() => {
                     navigation('/');
                 }, 1000);
             }, 1000);
         }
-
     }
     return (
         <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
